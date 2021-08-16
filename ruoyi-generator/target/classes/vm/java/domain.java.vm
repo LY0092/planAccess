@@ -1,0 +1,47 @@
+package ${packageName}.${businessName}.domain;
+
+#foreach ($import in $importList)
+import ${import};
+#end
+import lombok.Data;
+#foreach ($column in $columns)
+    #if($column.javaType == 'Date')
+    import com.fasterxml.jackson.annotation.JsonFormat;
+        #break
+    #end
+#end
+
+import javax.persistence.*;
+import java.io.Serializable;
+#foreach ($column in $columns)
+    #if($column.javaType == 'Date')
+    import java.util.Date;
+        #break
+    #end
+#end
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Data
+@Entity
+@Table(name = "${tableName}")
+public class ${ClassName} implements Serializable
+{
+#foreach ($column in $columns)
+
+    /** $column.columnComment */
+    #if($column.pk)
+@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    #end
+@Column(name = "$column.columnName")
+    #if($column.javaType == 'Date')
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    #end
+private $column.javaType $column.javaField;
+#end
+}

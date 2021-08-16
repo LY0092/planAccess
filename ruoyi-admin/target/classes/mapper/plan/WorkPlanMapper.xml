@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.plan.mapper.WorkPlanMapper">
+
+    <resultMap type="WorkPlan"          id="WorkPlanResult">
+        <result property="uuid"         column="uuid"    />
+        <result property="dimension"    column="dimension"    />
+        <result property="planName"     column="plan_name"    />
+        <result property="deptPerson"   column="dept_person"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"      column="end_time"    />
+        <result property="gainDesc"     column="gain_desc"    />
+        <result property="planYear"     column="plan_year"    />
+        <result property="remark"       column="remark"    />
+    </resultMap>
+
+    <sql id="selectWorkPlanVo">
+        select uuid, dimension, plan_name, dept_person, start_time, end_time, gain_desc, plan_year, remark from bus_work_plan
+    </sql>
+
+    <select id="selectWorkPlanList" parameterType="WorkPlan" resultMap="WorkPlanResult">
+        <include refid="selectWorkPlanVo"/>
+        <where>
+            <if test="planYear != null  and planYear != ''"> and plan_year = #{planYear}</if>
+        </where>
+    </select>
+
+    <select id="selectWorkPlanById" parameterType="Long" resultMap="WorkPlanResult">
+        <include refid="selectWorkPlanVo"/>
+        where uuid = #{uuid}
+    </select>
+
+    <insert id="insertWorkPlan" parameterType="WorkPlan" useGeneratedKeys="true" keyProperty="uuid">
+        insert into bus_work_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dimension != null">dimension,</if>
+            <if test="planName != null">plan_name,</if>
+            <if test="deptPerson != null">dept_person,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="gainDesc != null">gain_desc,</if>
+            <if test="planYear != null">plan_year,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dimension != null">#{dimension},</if>
+            <if test="planName != null">#{planName},</if>
+            <if test="deptPerson != null">#{deptPerson},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="gainDesc != null">#{gainDesc},</if>
+            <if test="planYear != null">#{planYear},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWorkPlan" parameterType="WorkPlan">
+        update bus_work_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dimension != null">dimension = #{dimension},</if>
+            <if test="planName != null">plan_name = #{planName},</if>
+            <if test="deptPerson != null">dept_person = #{deptPerson},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="gainDesc != null">gain_desc = #{gainDesc},</if>
+            <if test="planYear != null">plan_year = #{planYear},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deleteWorkPlanById" parameterType="Long">
+        delete from bus_work_plan where uuid = #{uuid}
+    </delete>
+
+    <delete id="deleteWorkPlanByIds" parameterType="String">
+        delete from bus_work_plan where uuid in
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+</mapper>

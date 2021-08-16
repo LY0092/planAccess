@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.plan.mapper.PlanCycleMapper">
+    
+    <resultMap type="PlanCycle" id="PlanCycleResult">
+        <result property="uuid"    column="uuid"    />
+        <result property="month"    column="month"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="type"    column="type"    />
+        <result property="year"    column="year"    />
+    </resultMap>
+
+    <sql id="selectPlanCycleVo">
+        select uuid, month, start_time, end_time, status, remark, type, year from bus_plan_cycle
+    </sql>
+
+    <select id="selectPlanCycleList" parameterType="PlanCycle" resultMap="PlanCycleResult">
+        <include refid="selectPlanCycleVo"/>
+        <where>  
+            <if test="year != null  and year != ''"> and year = #{year}</if>
+        </where>
+    </select>
+    
+    <select id="selectPlanCycleById" parameterType="Long" resultMap="PlanCycleResult">
+        <include refid="selectPlanCycleVo"/>
+        where uuid = #{uuid}
+    </select>
+        
+    <insert id="insertPlanCycle" parameterType="PlanCycle" useGeneratedKeys="true" keyProperty="uuid">
+        insert into bus_plan_cycle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="month != null">month,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="type != null">type,</if>
+            <if test="year != null">year,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="month != null">#{month},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="type != null">#{type},</if>
+            <if test="year != null">#{year},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePlanCycle" parameterType="PlanCycle">
+        update bus_plan_cycle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="month != null">month = #{month},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="year != null">year = #{year},</if>
+        </trim>
+        where uuid = #{uuid}
+    </update>
+
+    <delete id="deletePlanCycleById" parameterType="Long">
+        delete from bus_plan_cycle where uuid = #{uuid}
+    </delete>
+
+    <delete id="deletePlanCycleByIds" parameterType="String">
+        delete from bus_plan_cycle where uuid in 
+        <foreach item="uuid" collection="array" open="(" separator="," close=")">
+            #{uuid}
+        </foreach>
+    </delete>
+</mapper>
